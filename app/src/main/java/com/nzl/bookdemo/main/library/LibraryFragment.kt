@@ -8,7 +8,7 @@ import com.nzl.bookdemo.base.BaseFragment
  * Author:     nizonglong
  * CreateTime: 2019/11/21 18:12
  */
-class LibraryFragment:BaseFragment() {
+class LibraryFragment : BaseFragment() {
     override fun initLayout(): Int {
         return R.layout.fragment_library
     }
@@ -18,4 +18,5 @@ class LibraryFragment:BaseFragment() {
 
     override fun initData() {
     }
+
 }

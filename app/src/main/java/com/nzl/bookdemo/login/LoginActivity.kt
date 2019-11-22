@@ -5,7 +5,7 @@ import android.widget.Toast
 import com.nzl.bookdemo.MainActivity
 import com.nzl.bookdemo.R
 import com.nzl.bookdemo.base.BaseActivity
-import com.nzl.bookdemo.service.UserService
+import com.nzl.bookdemo.daofun.UserService
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : BaseActivity() {
