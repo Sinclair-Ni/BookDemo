@@ -16,7 +16,6 @@ class MainActivity : BaseActivity() {
     override fun initView() {
         val fragmentAdapter = FragmentAdapter(supportFragmentManager)
         viewpager.adapter = fragmentAdapter
-
     }
 
     override fun initData() {

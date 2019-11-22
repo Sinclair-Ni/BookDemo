@@ -22,7 +22,7 @@ class BookAdapter(private val mContext: Context?, private val data: List<Book>) 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(mContext).inflate(R.layout.book_item, parent, false)
-        return ViewHolder(view, "")
+        return ViewHolder(view)
     }
 
     override fun getItemCount(): Int = data.size
@@ -30,25 +30,19 @@ class BookAdapter(private val mContext: Context?, private val data: List<Book>) 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val book = data[position]
         holder.bookName.text = book.bookid
-        mContext?.let {
-            Glide.with(it).setDefaultRequestOptions(RequestOptions().fitCenter())
+        if (mContext != null) {
+            Glide.with(mContext).setDefaultRequestOptions(RequestOptions().fitCenter())
                 .load(book.bookMainPic).into(holder.bookImage)
         }
         holder.bookDesc.text = book.bookDesc
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private lateinit var cardView: CardView
-        lateinit var bookImage: ImageView
-        lateinit var bookName: TextView
-        lateinit var bookDesc: TextView
+        private var cardView: CardView = view as CardView
+        var bookImage: ImageView = view.findViewById(R.id.book_pic) as ImageView
+        var bookName: TextView = view.findViewById(R.id.book_name) as TextView
+        var bookDesc: TextView = view.findViewById(R.id.book_desc) as TextView
 
-        constructor(view: View, value: String) : this(view) {
-            this.cardView = view as CardView
-            this.bookImage = view.findViewById(R.id.book_pic) as ImageView
-            this.bookName = view.findViewById(R.id.book_name) as TextView
-            this.bookDesc = view.findViewById(R.id.book_desc) as TextView
-        }
     }
 
 

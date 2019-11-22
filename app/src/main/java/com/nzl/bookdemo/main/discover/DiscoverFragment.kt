@@ -19,12 +19,11 @@ import kotlinx.android.synthetic.main.fragment_discover.*
 class DiscoverFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private var pageIndex = 0
-
     private var books = ArrayList<Book>()
-
     private lateinit var mBookAdapter: BookAdapter
-
     private lateinit var db: BookManagedSQLiteOpenHelper
+    private lateinit var rvBook: RecyclerView
+    private lateinit var srlDynamic: SwipeRefreshLayout
 
     override fun initLayout(): Int {
         return R.layout.fragment_discover
@@ -33,30 +32,31 @@ class DiscoverFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun initView() {
         db = BookManagedSQLiteOpenHelper.getInstance(this.context)
         books.addAll(db.queryPageBook(pageIndex, 16))
-
         mBookAdapter = BookAdapter(this.context, books)
 
-        rv_book.adapter = mBookAdapter
-        // val layoutManager = GridLayoutManager(this, 1)
-        val layoutManager = LinearLayoutManager(this.requireContext())
-        rv_book.layoutManager = layoutManager
-
-
+        rvBook = getContentView()?.findViewById(R.id.rv_book) as RecyclerView
+        srlDynamic = getContentView()?.findViewById(R.id.srl_dynamic) as SwipeRefreshLayout
     }
 
+
     override fun initData() {
+        // val layoutManager = GridLayoutManager(this, 1)
+        val layoutManager = LinearLayoutManager(this.context)
+        rvBook.layoutManager = layoutManager
+
+        rvBook.adapter = mBookAdapter
 
         // 设置下拉监听
-        srl_dynamic.setOnRefreshListener(this)
+        srlDynamic.setOnRefreshListener(this)
         // 刷新渐变颜色
-        srl_dynamic.setColorSchemeResources(
+        srlDynamic.setColorSchemeResources(
             R.color.red,
             R.color.orange,
             R.color.lawnGreen,
             R.color.blue
         )
 
-        rv_book.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvBook.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             var lastVisibleItem: Int? = 0
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -77,7 +77,7 @@ class DiscoverFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onRefresh() {
         //关闭下拉刷新进度条
-        srl_dynamic.isRefreshing = false
+        srlDynamic.isRefreshing = false
         addData()
     }
 
@@ -89,7 +89,7 @@ class DiscoverFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     private val mHandler = Handler()
 
     private val mUpRefresh = Runnable {
-        srl_dynamic.isRefreshing = false
+        srlDynamic.isRefreshing = false
 
         // page index + 1
         pageIndex += 1
@@ -101,7 +101,7 @@ class DiscoverFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private val mRefresh = Runnable {
-        srl_dynamic.isRefreshing = false
+        srlDynamic.isRefreshing = false
 
         // page index + 1
         pageIndex += 1
