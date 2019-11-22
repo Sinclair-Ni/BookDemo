@@ -28,6 +28,7 @@ class LoginActivity : BaseActivity() {
             val password = et_login_password.text.toString().trim()
 
             //登录方法
+
             if (userService.login(username, password)) {
                 val intent = Intent()
                 //获取intent对象
@@ -38,12 +39,9 @@ class LoginActivity : BaseActivity() {
                 Toast.makeText(this, "用户名或者密码错误", Toast.LENGTH_SHORT).show()
             }
 
-//            /* 开启一个新线程，在新线程里执行耗时的方法 */
-//            Thread(Runnable {
-//
-//            })
 
         }
     }
+
 
 }
