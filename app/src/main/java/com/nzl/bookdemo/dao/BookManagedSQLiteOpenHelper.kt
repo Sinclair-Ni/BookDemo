@@ -75,7 +75,38 @@ class BookManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_V
                     book.bookPrice = BigDecimal(cursor.getDouble(3))
                     book.bookMainPic = cursor.getString(4)
                     book.bookAuthor = cursor.getString(5)
-//                    book.bookChapter = cursor.getInt(6)
+                    book.bookChapter = cursor.getInt(6)
+
+                    bookArray.add(book)
+                    if (cursor.isLast) {
+                        break
+                    }
+                    cursor.moveToNext()
+                }
+            }
+            cursor.close()
+        }
+        return bookArray
+    }
+
+    fun queryTypeBook(typeid: Int): List<Book> {
+        val sql =
+            "SELECT * from book where bookid in (SELECT bookid from book_type where typeid=$typeid);"
+        Log.d("queryTypeBook sql", sql)
+
+        var bookArray = mutableListOf<Book>()
+        use {
+            val cursor = rawQuery(sql, null)
+            if (cursor.moveToFirst()) {
+                while (true) {
+                    val book = Book("")
+                    book.bookid = cursor.getString(0)
+                    book.bookName = cursor.getString(1)
+                    book.bookDesc = cursor.getString(2)
+                    book.bookPrice = BigDecimal(cursor.getDouble(3))
+                    book.bookMainPic = cursor.getString(4)
+                    book.bookAuthor = cursor.getString(5)
+                    book.bookChapter = cursor.getInt(6)
 
                     bookArray.add(book)
                     if (cursor.isLast) {

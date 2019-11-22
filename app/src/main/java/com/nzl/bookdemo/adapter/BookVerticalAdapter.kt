@@ -16,11 +16,11 @@ import com.nzl.bookdemo.bean.Book
  * Author: nizonglong
  * C_Time: 2019/11/19 19:20
  */
-class BookAdapter(private val mContext: Context?, private val data: List<Book>) :
-    RecyclerView.Adapter<BookAdapter.ViewHolder>() {
+class BookVerticalAdapter(private val mContext: Context?, private val data: List<Book>) :
+    RecyclerView.Adapter<BookVerticalAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(mContext).inflate(R.layout.book_item, parent, false)
+        val view = LayoutInflater.from(mContext).inflate(R.layout.book_item_vertical, parent, false)
         return ViewHolder(view)
     }
 

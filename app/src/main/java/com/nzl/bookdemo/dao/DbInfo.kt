@@ -6,6 +6,6 @@ package com.nzl.bookdemo.dao
  * CreateTime: 2019/11/21 17:13
  */
 object DbInfo {
-    const val CURRENT_VERSION = 1
+    const val CURRENT_VERSION = 2
     val oldDbVersion = 1
 }

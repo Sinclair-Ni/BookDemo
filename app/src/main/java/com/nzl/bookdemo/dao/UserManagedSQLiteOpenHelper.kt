@@ -86,7 +86,7 @@ class UserManagedSQLiteOpenHelper(context: Context, DB_VERSION: Int = CURRENT_VE
                 info.email = cursor.getString(5)
                 info.phone = cursor.getString(6)
                 info.headPic = cursor.getString(7)
-//                info.country_code = cursor.getString(8)
+                info.country_code = cursor.getString(8)
             }
 
             Log.d("queryed cursor", info.userid)

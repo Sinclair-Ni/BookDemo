@@ -1,11 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.nzl.bookdemo.util.MyScrollView
+        android:id="@+id/myscrollview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="library"
-        android:textSize="24sp"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/rl_type1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_type1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_type2"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+
+            <RelativeLayout
+                android:id="@+id/rl_type3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_type3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_type4"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_type5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_type5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_type6"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+        </LinearLayout>
+    </com.nzl.bookdemo.util.MyScrollView>
 </LinearLayout>
