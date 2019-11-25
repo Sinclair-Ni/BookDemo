@@ -2,7 +2,7 @@ package com.nzl.bookdemo.daofun
 
 import android.content.Context
 import android.util.Log
-import com.nzl.bookdemo.dao.UserManagedSQLiteOpenHelper
+import com.nzl.bookdemo.dao.MyManagedSQLiteOpenHelper
 
 /**
  * FileName:   UserService
@@ -10,7 +10,8 @@ import com.nzl.bookdemo.dao.UserManagedSQLiteOpenHelper
  * CreateTime: 2019/11/21 17:17
  */
 class UserService(mContext: Context) {
-    private val userDb = UserManagedSQLiteOpenHelper.getInstance(mContext)
+
+    private val bookDb = MyManagedSQLiteOpenHelper.getInstance(mContext)
 
     fun login(username: String, password: String): Boolean {
         Log.d("UserService",username+password)
@@ -19,7 +20,7 @@ class UserService(mContext: Context) {
             return false
         }
 
-        val user = userDb.queryLogin(username, password)
+        val user = bookDb.queryLogin(username, password)
         if (user.userid.isNotEmpty()) {
             return true
         }

@@ -8,12 +8,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
 
-
     override fun initLayout(): Int {
         return R.layout.activity_main
     }
 
     override fun initView() {
+
         val fragmentAdapter = FragmentAdapter(supportFragmentManager)
         viewpager.adapter = fragmentAdapter
     }

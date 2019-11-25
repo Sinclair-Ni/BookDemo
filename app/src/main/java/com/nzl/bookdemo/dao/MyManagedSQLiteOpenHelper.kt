@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.nzl.bookdemo.bean.Book
+import com.nzl.bookdemo.bean.User
 import org.jetbrains.anko.db.ManagedSQLiteOpenHelper
 import java.math.BigDecimal
 
@@ -12,26 +13,49 @@ import java.math.BigDecimal
  * Author:     nizonglong
  * CreateTime: 2019/11/21 16:18
  */
-class BookManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_VERSION) :
+class MyManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_VERSION) :
     ManagedSQLiteOpenHelper(context!!, DB_NAME, null, DB_VERSION) {
     companion object {
-        private const val TAG = "BookManagedSQLiteOpenHelper"
+        private const val TAG = "MySQLiteOpenHelper"
         var DB_NAME = "bookstore.db" //数据库名称
         var CURRENT_VERSION = DbInfo.CURRENT_VERSION //当前的最新版本，如有表结构变更，该版本号要加一
-        private var instance: BookManagedSQLiteOpenHelper? = null
+        private var instance: MyManagedSQLiteOpenHelper? = null
         @Synchronized
-        fun getInstance(ctx: Context?, version: Int = 0): BookManagedSQLiteOpenHelper {
+        fun getInstance(ctx: Context?, version: Int = 0): MyManagedSQLiteOpenHelper {
             if (instance == null) {
                 //如果调用时没传版本号，就使用默认的最新版本号
                 instance =
-                    if (version > 0) BookManagedSQLiteOpenHelper(ctx?.applicationContext, version)
-                    else BookManagedSQLiteOpenHelper(ctx?.applicationContext)
+                    if (version > 0) MyManagedSQLiteOpenHelper(ctx?.applicationContext, version)
+                    else MyManagedSQLiteOpenHelper(ctx?.applicationContext)
             }
             return instance!!
         }
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
+
+        val createTableUserSql = "CREATE TABLE IF NOT EXISTS user (" +
+                "userid VARCHAR PRIMARY KEY NOT NULL," +
+                "username VARCHAR NOT NULL," +
+                "password VARCHAR NOT NULL," +
+                "gender VARCHAR NOT NULL," +
+                "real_name VARCHAR," +
+                "email VARCHAR," +
+                "phone VARCHAR," +
+                "head_pic VARCHAR NOT NULL DEFAULT 'head_pic_url'," +
+                "country_code Integer default 86);"
+        Log.d(TAG, "create_user_sql:$createTableUserSql")
+        db?.execSQL(createTableUserSql)
+
+        val init = """
+            INSERT INTO "user"("userid", "username", "password", 
+            "gender", "real_name", "email", "phone", "head_pic") 
+            VALUES ('asd123njasdhq', 'nizonglong', '123456', '男', '倪宗龙', 
+            'nizonglong@163.com', '17879552802', 'pic');
+        """.trimIndent()
+        db?.execSQL(init)
+
+
         // book
         val createTableBookSql = "CREATE TABLE IF NOT EXISTS book (" +
                 "bookid VARCHAR PRIMARY KEY  NOT NULL," +
@@ -39,9 +63,9 @@ class BookManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_V
                 "book_desc VARCHAR NOT NULL," +
                 "book_price REAL NOT NULL," +
                 "book_main_pic VARCHAR," +
-                "book_author VARCHAR,"+
-                "book_chapter INTEGER default 0"+
-        ");"
+                "book_author VARCHAR," +
+                "book_chapter INTEGER default 0" +
+                ");"
         Log.d(TAG, "create_book_sql:$createTableBookSql")
         db?.execSQL(createTableBookSql)
 
@@ -60,14 +84,11 @@ class BookManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_V
         Log.d(TAG, "createTableBookTypeSql:$createTableBookTypeSql")
         db?.execSQL(createTableBookTypeSql)
 
-        db?.beginTransaction()
         // init data
         initData(db)
-        db?.setTransactionSuccessful()
-        db?.endTransaction()
     }
 
-    private fun initData(db: SQLiteDatabase?){
+    private fun initData(db: SQLiteDatabase?) {
         val insertBook = """
             INSERT INTO "book"("bookid", "book_name", "book_desc", "book_price", "book_main_pic", "book_author", "book_chapter") VALUES ('b1', '择天记', '玄幻小说', 100.6, 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574224656883&di=54efefb512bac5537903ef447c86bc30&imgtype=0&src=http%3A%2F%2Fn.sinaimg.cn%2Ftransform%2F20150925%2FZ3gQ-fxieymu0841712.jpg', '猫腻', 0);
             INSERT INTO "book"("bookid", "book_name", "book_desc", "book_price", "book_main_pic", "book_author", "book_chapter") VALUES ('b2', '择天记', '玄幻小说', 100.6, 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574224656883&di=54efefb512bac5537903ef447c86bc30&imgtype=0&src=http%3A%2F%2Fn.sinaimg.cn%2Ftransform%2F20150925%2FZ3gQ-fxieymu0841712.jpg', '猫腻', 0);
@@ -128,8 +149,7 @@ class BookManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_V
             INSERT INTO "book"("bookid", "book_name", "book_desc", "book_price", "book_main_pic", "book_author", "book_chapter") VALUES ('b57', '劈天记', '玄幻小说', 100.6, 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574231428967&di=850c9d00932cc65b5616175998d9b368&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F53b5e89b98bd906d9ee1c7a790e14952de60be6a635c8-A2CMqL_fw658', '紫荆果', 0);
             INSERT INTO "book"("bookid", "book_name", "book_desc", "book_price", "book_main_pic", "book_author", "book_chapter") VALUES ('b58', '劈天记', '玄幻小说', 100.6, 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574231428967&di=850c9d00932cc65b5616175998d9b368&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F53b5e89b98bd906d9ee1c7a790e14952de60be6a635c8-A2CMqL_fw658', '紫荆果', 0);
             INSERT INTO "book"("bookid", "book_name", "book_desc", "book_price", "book_main_pic", "book_author", "book_chapter") VALUES ('b59', '劈天记', '玄幻小说', 100.6, 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574231428967&di=850c9d00932cc65b5616175998d9b368&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F53b5e89b98bd906d9ee1c7a790e14952de60be6a635c8-A2CMqL_fw658', '紫荆果', 0);
-            INSERT INTO "book"("bookid", "book_name", "book_desc", "book_price", "book_main_pic", "book_author", "book_chapter") VALUES ('b60', '劈天记', '玄幻小说', 100.6, 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574231428967&di=850c9d00932cc65b5616175998d9b368&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F53b5e89b98bd906d9ee1c7a790e14952de60be6a635c8-A2CMqL_fw658', '紫荆果', 0);
-
+            INSERT INTO "book"("bookid", "book_name", "book_desc", "book_price", "book_main_pic", "book_author", "book_chapter") VALUES ('b60', '劈天记', '玄幻小说', 100.6, 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1574231428967&di=850c9d00932cc65b5616175998d9b368&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F53b5e89b98bd906d9ee1c7a790e14952de60be6a635c8-A2CMqL_fw658', '紫荆果', 0)
         """.trimIndent()
         val insertType = """
             INSERT INTO "type"("typeid", "type_name") VALUES (1, '玄幻');
@@ -137,8 +157,7 @@ class BookManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_V
             INSERT INTO "type"("typeid", "type_name") VALUES (3, '爱情');
             INSERT INTO "type"("typeid", "type_name") VALUES (4, '穿越');
             INSERT INTO "type"("typeid", "type_name") VALUES (5, '童话');
-            INSERT INTO "type"("typeid", "type_name") VALUES (6, '科学');
-
+            INSERT INTO "type"("typeid", "type_name") VALUES (6, '科学')
         """.trimIndent()
         val insertBookType = """
             INSERT INTO "book_type"("bookid", "typeid") VALUES ('b1', 1);
@@ -198,31 +217,43 @@ class BookManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_V
             INSERT INTO "book_type"("bookid", "typeid") VALUES ('b51', 4);
             INSERT INTO "book_type"("bookid", "typeid") VALUES ('b52', 5);
             INSERT INTO "book_type"("bookid", "typeid") VALUES ('b53', 6);
-            INSERT INTO "book_type"("bookid", "typeid") VALUES ('b54', 3);
-
+            INSERT INTO "book_type"("bookid", "typeid") VALUES ('b54', 3)
         """.trimIndent()
 
+        val bookData = insertBook.split(";")
+        val typeData = insertType.split(";")
+        val bookTypeData = insertBookType.split(";")
 
-        db?.execSQL(insertBook)
-        db?.execSQL(insertType)
-        db?.execSQL(insertBookType)
+
+        for (sql in bookData) {
+            db?.execSQL("$sql;")
+        }
+
+        for (sql in typeData) {
+            db?.execSQL(sql)
+        }
+
+        for (sql in bookTypeData) {
+            db?.execSQL(sql)
+        }
+
     }
 
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        when (oldVersion) {
-            11 -> {
-                /**
-                 * 更新用户表新增 国家代码 字段
-                 * 更新书籍表新增 章节 字段，默认0
-                 */
-                val bookSql = "alter table book add column book_chapter INTEGER NOT NULL default 0"
-                Log.d("alter book", bookSql)
-                db?.execSQL(bookSql)
-                Log.d("onUpgrade Book", "升级数据库版本1->2 successful")
-            }
-
-        }
+//        when (oldVersion) {
+//            11 -> {
+//                /**
+//                 * 更新用户表新增 国家代码 字段
+//                 * 更新书籍表新增 章节 字段，默认0
+//                 */
+//                val bookSql = "alter table book add column book_chapter INTEGER NOT NULL default 0"
+//                Log.d("alter book", bookSql)
+//                db?.execSQL(bookSql)
+//                Log.d("onUpgrade Book", "升级数据库版本1->2 successful")
+//            }
+//
+//        }
     }
 
     fun queryPageBook(pageIndex: Int, pageSize: Int): List<Book> {
@@ -284,5 +315,32 @@ class BookManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_V
             cursor.close()
         }
         return bookArray
+    }
+
+    fun queryLogin(username: String, password: String): User {
+        val sql = "select * from user where username='$username' and password='$password'"
+        Log.d("query Login", sql)
+        val info = User()
+        use {
+            val cursor = rawQuery(sql, null)
+            if (cursor.moveToFirst()) {
+                info.userid = cursor.getString(0)
+                info.username = cursor.getString(1)
+                info.password = cursor.getString(2)
+                info.gender = cursor.getString(3)
+                info.realName = cursor.getString(4)
+                info.email = cursor.getString(5)
+                info.phone = cursor.getString(6)
+                info.headPic = cursor.getString(7)
+                info.country_code = cursor.getString(8)
+            }
+
+            Log.d("queryed cursor", info.userid)
+            cursor.close()
+        }
+
+
+        Log.d("queryed User", info.userid)
+        return info
     }
 }

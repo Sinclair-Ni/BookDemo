@@ -8,7 +8,7 @@ import com.nzl.bookdemo.R
 import com.nzl.bookdemo.adapter.BookAdapter
 import com.nzl.bookdemo.base.BaseFragment
 import com.nzl.bookdemo.bean.Book
-import com.nzl.bookdemo.dao.BookManagedSQLiteOpenHelper
+import com.nzl.bookdemo.dao.MyManagedSQLiteOpenHelper
 import kotlinx.android.synthetic.main.fragment_discover.*
 
 /**
@@ -21,7 +21,7 @@ class DiscoverFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     private var pageIndex = 0
     private var books = ArrayList<Book>()
     private lateinit var mBookAdapter: BookAdapter
-    private lateinit var db: BookManagedSQLiteOpenHelper
+    private lateinit var db: MyManagedSQLiteOpenHelper
     private lateinit var rvBook: RecyclerView
     private lateinit var srlDynamic: SwipeRefreshLayout
 
@@ -30,7 +30,7 @@ class DiscoverFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun initView() {
-        db = BookManagedSQLiteOpenHelper.getInstance(this.context)
+        db = MyManagedSQLiteOpenHelper.getInstance(this.context)
         books.addAll(db.queryPageBook(pageIndex, 16))
         mBookAdapter = BookAdapter(this.context, books)
 

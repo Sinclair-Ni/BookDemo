@@ -17,7 +17,6 @@ class LoginActivity : BaseActivity() {
 
     override fun initView() {
         userService = UserService(this)
-
     }
 
     override fun initData() {

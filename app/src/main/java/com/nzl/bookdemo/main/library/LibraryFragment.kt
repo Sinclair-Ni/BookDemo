@@ -8,7 +8,7 @@ import com.nzl.bookdemo.adapter.BookAdapter
 import com.nzl.bookdemo.adapter.BookVerticalAdapter
 import com.nzl.bookdemo.base.BaseFragment
 import com.nzl.bookdemo.bean.Book
-import com.nzl.bookdemo.dao.BookManagedSQLiteOpenHelper
+import com.nzl.bookdemo.dao.MyManagedSQLiteOpenHelper
 
 /**
  * FileName:   LibraryFragment
@@ -33,7 +33,7 @@ class LibraryFragment : BaseFragment() {
     private var books6 = ArrayList<Book>()
 
 
-    private lateinit var db: BookManagedSQLiteOpenHelper
+    private lateinit var db: MyManagedSQLiteOpenHelper
 
     private lateinit var rlType1: RelativeLayout
     private lateinit var rlType3: RelativeLayout
@@ -52,7 +52,7 @@ class LibraryFragment : BaseFragment() {
 
     override fun initView() {
         // DB
-        db = BookManagedSQLiteOpenHelper.getInstance(this.context)
+        db = MyManagedSQLiteOpenHelper.getInstance(this.context)
 
         // LayoutManager
         val lmHorizontal = LinearLayoutManager(this.context)
