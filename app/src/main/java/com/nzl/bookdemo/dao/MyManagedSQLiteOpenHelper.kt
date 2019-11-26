@@ -44,6 +44,7 @@ class MyManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_VER
                 "phone VARCHAR," +
                 "head_pic VARCHAR NOT NULL DEFAULT 'head_pic_url'," +
                 "country_code Integer default 86);"
+
         Log.d(TAG, "create_user_sql:$createTableUserSql")
         db?.execSQL(createTableUserSql)
 
@@ -86,6 +87,47 @@ class MyManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_VER
 
         // init data
         initData(db)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        when (oldVersion) {
+            1 -> {
+                if (newVersion == 2) {
+                    /**
+                     * 更新用户表新增 国家代码 字段
+                     * 更新书籍表新增 章节 字段，默认0
+                     */
+                    /**
+                     * 更新用户表新增 国家代码 字段
+                     * 更新书籍表新增 章节 字段，默认0
+                     */
+                    val updateUserSql =
+                        "alter table user add column coutry_code INTEGER NOT NULL default 86"
+                    Log.d("alter user", updateUserSql)
+                    db!!.execSQL(updateUserSql)
+
+                    val updateBookSql =
+                        "alter table book add column book_chapter INTEGER NOT NULL default 0"
+                    Log.d("alter book", updateBookSql)
+                    db.execSQL(updateBookSql)
+
+                    Log.d("onUpgrade Book", "升级数据库版本1->2 successful")
+                }
+            }
+            2 -> {
+
+            }
+        }
+    }
+
+    override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        when (newVersion) {
+            1 -> {
+                if (oldVersion == 2) {
+                    // 降级操作
+                }
+            }
+        }
     }
 
     private fun initData(db: SQLiteDatabase?) {
@@ -237,23 +279,6 @@ class MyManagedSQLiteOpenHelper(context: Context?, DB_VERSION: Int = CURRENT_VER
             db?.execSQL(sql)
         }
 
-    }
-
-
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-//        when (oldVersion) {
-//            11 -> {
-//                /**
-//                 * 更新用户表新增 国家代码 字段
-//                 * 更新书籍表新增 章节 字段，默认0
-//                 */
-//                val bookSql = "alter table book add column book_chapter INTEGER NOT NULL default 0"
-//                Log.d("alter book", bookSql)
-//                db?.execSQL(bookSql)
-//                Log.d("onUpgrade Book", "升级数据库版本1->2 successful")
-//            }
-//
-//        }
     }
 
     fun queryPageBook(pageIndex: Int, pageSize: Int): List<Book> {

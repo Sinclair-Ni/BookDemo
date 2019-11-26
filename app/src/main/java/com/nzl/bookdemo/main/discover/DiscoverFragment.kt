@@ -1,117 +1,126 @@
 package com.nzl.bookdemo.main.discover
 
-import android.os.Handler
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.nzl.bookdemo.R
 import com.nzl.bookdemo.adapter.BookAdapter
+import com.nzl.bookdemo.adapter.BookVerticalAdapter
 import com.nzl.bookdemo.base.BaseFragment
 import com.nzl.bookdemo.bean.Book
 import com.nzl.bookdemo.dao.MyManagedSQLiteOpenHelper
-import kotlinx.android.synthetic.main.fragment_discover.*
 
 /**
  * FileName:   DiscoveryFragment
  * Author:     nizonglong
  * CreateTime: 2019/11/21 18:02
  */
-class DiscoverFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
+class DiscoverFragment : BaseFragment(){
+    // adapters
+    private lateinit var mBook1Adapter: BookVerticalAdapter
+    private lateinit var mBook2Adapter: BookAdapter
+    private lateinit var mBook3Adapter: BookVerticalAdapter
+    private lateinit var mBook4Adapter: BookAdapter
+    private lateinit var mBook5Adapter: BookVerticalAdapter
+    private lateinit var mBook6Adapter: BookAdapter
 
-    private var pageIndex = 0
-    private var books = ArrayList<Book>()
-    private lateinit var mBookAdapter: BookAdapter
+    // book data
+    private var books1 = ArrayList<Book>()
+    private var books2 = ArrayList<Book>()
+    private var books3 = ArrayList<Book>()
+    private var books4 = ArrayList<Book>()
+    private var books5 = ArrayList<Book>()
+    private var books6 = ArrayList<Book>()
+
+
     private lateinit var db: MyManagedSQLiteOpenHelper
-    private lateinit var rvBook: RecyclerView
-    private lateinit var srlDynamic: SwipeRefreshLayout
+
+    private lateinit var rlType1: RelativeLayout
+    private lateinit var rlType3: RelativeLayout
+    private lateinit var rlType5: RelativeLayout
+
+    private lateinit var rvType1: RecyclerView
+    private lateinit var rvType2: RecyclerView
+    private lateinit var rvType3: RecyclerView
+    private lateinit var rvType4: RecyclerView
+    private lateinit var rvType5: RecyclerView
+    private lateinit var rvType6: RecyclerView
 
     override fun initLayout(): Int {
         return R.layout.fragment_discover
     }
 
     override fun initView() {
+        // DB
         db = MyManagedSQLiteOpenHelper.getInstance(this.context)
-        books.addAll(db.queryPageBook(pageIndex, 16))
-        mBookAdapter = BookAdapter(this.context, books)
 
-        rvBook = getContentView()?.findViewById(R.id.rv_book) as RecyclerView
-        srlDynamic = getContentView()?.findViewById(R.id.srl_dynamic) as SwipeRefreshLayout
+        // LayoutManager
+        val lmHorizontal = LinearLayoutManager(this.context)
+        lmHorizontal.orientation = LinearLayoutManager.HORIZONTAL
+
+        val lmHorizontal2 = LinearLayoutManager(this.context)
+        lmHorizontal2.orientation = LinearLayoutManager.HORIZONTAL
+
+        val lmHorizontal3 = LinearLayoutManager(this.context)
+        lmHorizontal3.orientation = LinearLayoutManager.HORIZONTAL
+
+        val lmVertical = LinearLayoutManager(this.context)
+        lmVertical.orientation = LinearLayoutManager.VERTICAL
+
+        val lmVertical2 = LinearLayoutManager(this.context)
+        lmVertical2.orientation = LinearLayoutManager.VERTICAL
+
+        val lmVertical3 = LinearLayoutManager(this.context)
+        lmVertical3.orientation = LinearLayoutManager.VERTICAL
+
+
+        // set RelativeLayout
+        rlType1 = getContentView()?.findViewById(R.id.rl_type1) as RelativeLayout
+        rlType3 = getContentView()?.findViewById(R.id.rl_type3) as RelativeLayout
+        rlType5 = getContentView()?.findViewById(R.id.rl_type5) as RelativeLayout
+
+        // set RecyclerView
+        rvType1 = getContentView()?.findViewById(R.id.rv_type1) as RecyclerView
+        rvType1.layoutManager = lmHorizontal
+
+        rvType2 = getContentView()?.findViewById(R.id.rv_type2) as RecyclerView
+        rvType2.layoutManager = lmVertical
+
+        rvType3 = getContentView()?.findViewById(R.id.rv_type3) as RecyclerView
+        rvType3.layoutManager = lmHorizontal2
+
+        rvType4 = getContentView()?.findViewById(R.id.rv_type4) as RecyclerView
+        rvType4.layoutManager = lmVertical2
+
+        rvType5 = getContentView()?.findViewById(R.id.rv_type5) as RecyclerView
+        rvType5.layoutManager = lmHorizontal3
+
+        rvType6 = getContentView()?.findViewById(R.id.rv_type6) as RecyclerView
+        rvType6.layoutManager = lmVertical3
     }
-
 
     override fun initData() {
-        // val layoutManager = GridLayoutManager(this, 1)
-        val layoutManager = LinearLayoutManager(this.context)
-        rvBook.layoutManager = layoutManager
+        // add data
+        books1.addAll(db.queryTypeBook(1))
+        books2.addAll(db.queryTypeBook(2))
+        books3.addAll(db.queryTypeBook(3))
+        books4.addAll(db.queryTypeBook(4))
+        books5.addAll(db.queryTypeBook(5))
+        books6.addAll(db.queryTypeBook(6))
 
-        rvBook.adapter = mBookAdapter
+        mBook1Adapter = BookVerticalAdapter(this.context, books1)
+        mBook2Adapter = BookAdapter(this.context, books2)
+        mBook3Adapter = BookVerticalAdapter(this.context, books3)
+        mBook4Adapter = BookAdapter(this.context, books4)
+        mBook5Adapter = BookVerticalAdapter(this.context, books5)
+        mBook6Adapter = BookAdapter(this.context, books6)
 
-        // 设置下拉监听
-        srlDynamic.setOnRefreshListener(this)
-        // 刷新渐变颜色
-        srlDynamic.setColorSchemeResources(
-            R.color.red,
-            R.color.orange,
-            R.color.lawnGreen,
-            R.color.blue
-        )
 
-        rvBook.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var lastVisibleItem: Int? = 0
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem!! + 1 == mBookAdapter.itemCount) {
-                    addData()
-                }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                //最后一个可见的ITEM
-                lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-            }
-        })
-
-    }
-
-    override fun onRefresh() {
-        //关闭下拉刷新进度条
-        srlDynamic.isRefreshing = false
-        addData()
-    }
-
-    private fun addData() {
-        // 延迟2s刷新
-        mHandler.postDelayed(mUpRefresh, 2000)
-    }
-
-    private val mHandler = Handler()
-
-    private val mUpRefresh = Runnable {
-        srlDynamic.isRefreshing = false
-
-        // page index + 1
-        pageIndex += 1
-        // book data refresh
-        books.addAll(db.queryPageBook(pageIndex, 16))
-
-        mBookAdapter.notifyDataSetChanged()
-        //rv_book.scrollToPosition(pageIndex*16)
-    }
-
-    private val mRefresh = Runnable {
-        srlDynamic.isRefreshing = false
-
-        // page index + 1
-        pageIndex += 1
-        // book data refresh
-        val tempBook = books.clone()
-        books.clear()
-        books.addAll(db.queryPageBook(pageIndex, 16))
-        books.addAll(tempBook as ArrayList<Book>)
-
-        mBookAdapter.notifyDataSetChanged()
-        rv_book.scrollToPosition(0)
+        rvType1.adapter = mBook1Adapter
+        rvType2.adapter = mBook2Adapter
+        rvType3.adapter = mBook3Adapter
+        rvType4.adapter = mBook4Adapter
+        rvType5.adapter = mBook5Adapter
+        rvType6.adapter = mBook6Adapter
     }
 }

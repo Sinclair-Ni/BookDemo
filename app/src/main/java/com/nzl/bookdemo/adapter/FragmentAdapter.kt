@@ -28,15 +28,8 @@ class FragmentAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> mFragments[0]
-            1 -> {
-                mFragments[1]
-            }
-            2 -> {
-                mFragments[2]
-            }
-            3 -> {
-                mFragments[3]
-            }
+            1 -> mFragments[1]
+            2 -> mFragments[2]
             else -> {
                 mFragments[0]
             }
